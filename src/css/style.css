@@ -1,5 +1,9 @@
 @import url(_reset.css);
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 form {
   max-width: 600px;
   margin: 40px auto;
@@ -231,7 +235,6 @@ h1 {
 .view-button:hover {
   background-color: #138496; /* Darker blue */
 }
-
 
 .message {
   margin-top: 20px;

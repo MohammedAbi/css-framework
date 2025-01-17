@@ -23,7 +23,7 @@ export async function onLogin(event) {
     displayMessage("Login successful! Redirecting...", "success");
 
     await saveKey("accessToken", response.token);
-    await saveKey("profileData", response.user);
+    await saveKey("profileData", response.user.email);
 
     setTimeout(() => {
       window.location.href = "../../";

@@ -10,11 +10,12 @@ import { setLogoutListener } from "../ui/global/logout";
  * @throws {Error} If an error occurs while retrieving the access token from local storage.
  */
 export async function authGuard() {
-  const accessToken = await getKey("profileData");
+  const accessToken = await getKey("accessToken");
   if (!accessToken) {
     alert("You must be logged in to view this page");
     window.location.href = "/auth/login/";
   }
+  return accessToken;
 }
 
 setLogoutListener();

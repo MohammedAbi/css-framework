@@ -1,8 +1,5 @@
 import { displayAllPosts } from "../../ui/post/read";
-
 import { authGuard } from "../../utilities/authGuard";
-
-
 
 async function init() {
   try {

@@ -1,4 +1,6 @@
+import { API_SOCIAL_POSTS } from "../../api/constants";
 import { getKey } from "../../api/getKey";
+import { makeRequest } from "../../api/makeRequest";
 import { deletePost } from "../../api/post/delete";
 import { readAllPosts, readPost, readPosts } from "../../api/post/read";
 import { displayMessage } from "../../ui/global/messageUtils";
@@ -457,3 +459,127 @@ export async function onDeletePost(event) {
     displayMessage(`Failed to delete post: ${error.message}`, "error");
   }
 }
+
+/**
+ * Searches for posts based on a query and displays the results.
+ * @param {string} query - The search query.
+ */
+export async function searchPosts(query) {
+  const postContainer = document.getElementById("postContainer");
+  if (!postContainer) {
+    console.warn("Post container not found.");
+    return;
+  }
+
+  try {
+    // Fetch posts from the search API endpoint using makeRequest
+    const url = `${API_SOCIAL_POSTS}/search?q=${encodeURIComponent(query)}`;
+    const data = await makeRequest(url, "GET", null, true); // Set requireApiKey to true
+
+    const posts = data.data; // Assuming the API returns { data: [...] }
+
+    // Clear the existing posts
+    postContainer.innerHTML = "";
+
+    // Display the search results
+    if (posts.length === 0) {
+      postContainer.innerHTML = `<p class="text-gray-600">No posts found for "${query}".</p>`;
+    } else {
+      posts.forEach((post) => {
+        // Create the main post container element
+        const postElement = document.createElement("div");
+        postElement.classList.add("bg-white", "p-4", "rounded-lg", "shadow-md");
+
+        // Create and append image if available
+        if (post.media?.url) {
+          const imageElement = document.createElement("img");
+          imageElement.src = post.media.url;
+          imageElement.alt = post.media?.alt || "Post Thumbnail";
+          imageElement.classList.add(
+            "w-full",
+            "h-48",
+            "object-cover",
+            "rounded-md"
+          );
+          postElement.appendChild(imageElement);
+        }
+
+        // Create and append title
+        const titleElement = document.createElement("h2");
+        titleElement.textContent = post.title;
+        titleElement.classList.add("text-xl", "font-semibold", "mt-4");
+        postElement.appendChild(titleElement);
+
+        // Create and append body
+        const bodyElement = document.createElement("p");
+        bodyElement.textContent = post.body || "No body content available.";
+        bodyElement.classList.add("text-gray-600", "mt-2");
+        postElement.appendChild(bodyElement);
+
+        // Create and append tags
+        const tagsContainer = document.createElement("p");
+        tagsContainer.classList.add("mt-2");
+        if (post.tags && post.tags.length > 0) {
+          post.tags.forEach((tag) => {
+            const tagElement = document.createElement("span");
+            tagElement.textContent = tag;
+            tagElement.classList.add(
+              "inline-block",
+              "bg-gray-500",
+              "text-white",
+              "text-xs",
+              "font-semibold",
+              "py-1",
+              "px-3",
+              "rounded",
+              "mr-2",
+              "mb-2",
+              "cursor-pointer",
+              "hover:bg-gray-600",
+              "transition-colors"
+            );
+            tagsContainer.appendChild(tagElement);
+          });
+        } else {
+          tagsContainer.textContent = "No tags";
+        }
+        postElement.appendChild(tagsContainer);
+
+        // Create and append "Read More" button
+        const readMoreButtonContainer = document.createElement("div");
+        readMoreButtonContainer.classList.add("text-right", "mt-2");
+
+        const readMoreButton = document.createElement("button");
+        readMoreButton.textContent = "Read More";
+        readMoreButton.classList.add(
+          "rounded-md",
+          "border-2",
+          "border-blue-600",
+          "px-6",
+          "py-1",
+          "font-medium",
+          "text-blue-600",
+          "transition-colors",
+          "hover:bg-blue-600",
+          "hover:text-white"
+        );
+        readMoreButton.setAttribute("data-id", post.id);
+        readMoreButton.addEventListener("click", (event) => {
+          const postId = event.target.getAttribute("data-id");
+          window.location.href = `/post/?postId=${postId}`; // Redirect to post details page
+        });
+
+        readMoreButtonContainer.appendChild(readMoreButton);
+        postElement.appendChild(readMoreButtonContainer);
+
+        // Append the post element to the postContainer
+        postContainer.appendChild(postElement);
+      });
+    }
+  } catch (error) {
+    console.error("Error searching posts:", error.message);
+    displayMessage(`Failed to search posts: ${error.message}`, "error");
+  }
+}
+
+

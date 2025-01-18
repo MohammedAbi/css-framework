@@ -1,4 +1,4 @@
-import { displayAllPosts } from "../../ui/post/read";
+import { displayAllPosts, searchPosts } from "../../ui/post/read";
 import { authGuard } from "../../utilities/authGuard";
 
 let offset = 0; // Track the current offset
@@ -6,6 +6,7 @@ const limit = 9; // Initial number of posts to load
 const loadMoreLimit = 6; // Number of posts to load on each "Load More" click
 
 async function init() {
+  authGuard();
   try {
     // Wait for authGuard to complete
     const isAuthenticated = await authGuard();
@@ -27,6 +28,21 @@ async function init() {
           if (newPosts.length < loadMoreLimit) {
             loadMoreButton.disabled = true;
             loadMoreButton.textContent = "No more posts";
+          }
+        });
+      }
+
+      // Add event listener to the search input
+      const searchInput = document.getElementById("searchInput");
+      if (searchInput) {
+        searchInput.addEventListener("input", (event) => {
+          const query = event.target.value.trim();
+          if (query) {
+            searchPosts(query); // Call the search function
+
+          } else {
+            // If the search input is empty, reload the initial posts
+            displayAllPosts(0, limit);
           }
         });
       }

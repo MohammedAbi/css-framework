@@ -128,8 +128,7 @@
 //   }
 // }
 
-
-import { readAllPosts } from "../../api/post/read";
+import { readAllPosts, readPost } from "../../api/post/read";
 import { displayMessage } from "../../ui/global/messageUtils";
 import { authGuard } from "../../utilities/authGuard";
 
@@ -170,7 +169,12 @@ export async function displayAllPosts(offset = 0, limit = 12) {
         const imageElement = document.createElement("img");
         imageElement.src = post.media.url;
         imageElement.alt = post.media?.alt || "Post Thumbnail";
-        imageElement.classList.add("w-full", "h-48", "object-cover", "rounded-md");
+        imageElement.classList.add(
+          "w-full",
+          "h-48",
+          "object-cover",
+          "rounded-md"
+        );
         postElement.appendChild(imageElement);
       }
 
@@ -236,7 +240,7 @@ export async function displayAllPosts(offset = 0, limit = 12) {
       readMoreButton.setAttribute("data-id", post.id);
       readMoreButton.addEventListener("click", (event) => {
         const postId = event.target.getAttribute("data-id");
-        window.location.href = `post/?postId=${postId}`; // Redirect to post details page
+        window.location.href = `/post/?postId=${postId}`; // Redirect to post details page
       });
 
       readMoreButtonContainer.appendChild(readMoreButton);
@@ -252,5 +256,125 @@ export async function displayAllPosts(offset = 0, limit = 12) {
     console.error("Error fetching posts:", error.message);
     displayMessage(`Failed to load posts: ${error.message}`, "error");
     return [];
+  }
+}
+
+/**
+ * Fetches and displays a single post based on the `postId` from the URL.
+ */
+export async function displaySinglePost() {
+  // Get the postId from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get("postId");
+
+  if (!postId) {
+    displayMessage("No post ID provided.", "error");
+    return;
+  }
+
+  try {
+    // Fetch the post data from the API
+    const response = await readPost(postId); // Pass the postId to readPost
+    const post = response.data;
+
+    // Get the container for the single post
+    const singlePostContainer = document.getElementById("singlePostContainer");
+
+    // Clear any existing content
+    singlePostContainer.innerHTML = "";
+
+    // Create the post structure
+    const postElement = document.createElement("div");
+    postElement.classList.add("bg-white", "p-8", "rounded-lg", "shadow-md");
+
+    // Post Title
+    const titleElement = document.createElement("h1");
+    titleElement.textContent = post.title;
+    titleElement.classList.add(
+      "text-3xl",
+      "font-bold",
+      "mb-6",
+      "text-gray-900"
+    );
+    postElement.appendChild(titleElement);
+
+    // Post Media (if available)
+    if (post.media?.url) {
+      const mediaElement = document.createElement("div");
+      mediaElement.classList.add("mb-6");
+
+      const imageElement = document.createElement("img");
+      imageElement.src = post.media.url;
+      imageElement.alt = post.media.alt || "Post Image";
+      imageElement.classList.add(
+        "w-full", // Full width
+        "h-96", // Fixed height (adjust as needed)
+        "object-cover", // Maintain aspect ratio
+        "rounded-lg", // Rounded corners
+        "shadow-sm" // Subtle shadow
+      );
+      mediaElement.appendChild(imageElement);
+
+      postElement.appendChild(mediaElement);
+    }
+
+    // Post Body
+    const bodyElement = document.createElement("p");
+    bodyElement.textContent = post.body || "No body content available.";
+    bodyElement.classList.add("text-gray-700", "text-lg", "mb-6");
+    postElement.appendChild(bodyElement);
+
+    // Post Tags (if available)
+    if (post.tags && post.tags.length > 0) {
+      const tagsContainer = document.createElement("div");
+      tagsContainer.classList.add("flex", "flex-wrap", "gap-2", "mb-6");
+
+      post.tags.forEach((tag) => {
+        const tagElement = document.createElement("span");
+        tagElement.textContent = tag;
+        tagElement.classList.add(
+          "inline-block",
+          "bg-blue-600",
+          "text-white",
+          "text-sm",
+          "font-semibold",
+          "py-1",
+          "px-3",
+          "rounded-full",
+          "hover:bg-blue-700",
+          "transition-colors"
+        );
+        tagsContainer.appendChild(tagElement);
+      });
+
+      postElement.appendChild(tagsContainer);
+    }
+
+    // Back Button
+    const backButtonContainer = document.createElement("div");
+    backButtonContainer.classList.add("text-right");
+
+    const backButton = document.createElement("a");
+    backButton.href = "/";
+    backButton.textContent = "Back to Feed";
+    backButton.classList.add(
+      "inline-block",
+      "bg-blue-600",
+      "text-white",
+      "py-2",
+      "px-6",
+      "rounded-md",
+      "font-medium",
+      "hover:bg-blue-700",
+      "transition-colors"
+    );
+    backButtonContainer.appendChild(backButton);
+    postElement.appendChild(backButtonContainer);
+
+    // Append the post to the container
+    singlePostContainer.appendChild(postElement);
+  } catch (error) {
+    console.error("Error fetching post:", error.message);
+    displayMessage(`Failed to load post: ${error.message}`, "error");
   }
 }

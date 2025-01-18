@@ -33,20 +33,7 @@ export async function readAllPosts() {
  * @returns {Promise<object>} The response data containing the post details.
  * @throws {Error} If the API request fails.
  */
-// export async function readPost(id) {
-//   try {
-//     const response = await makeRequest(
-//       `${API_SOCIAL_POSTS}/${id}`,
-//       "GET",
-//       null,
-//       true
-//     );
-//     console.log(response);
-//     return response; // Return the response data
-//   } catch (error) {
-//     throw new Error(`Error reading post with ID ${id}: ${error.message}`);
-//   }
-// }
+
 export async function readPost(id, options = {}) {
   try {
     // Convert options to query parameters

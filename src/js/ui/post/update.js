@@ -57,7 +57,3 @@ export async function onUpdatePost(event) {
  *
  * @returns {string|null} The `postId` from the URL or null if not present.
  */
-// function getPostId() {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   return urlParams.get("postId");
-// }

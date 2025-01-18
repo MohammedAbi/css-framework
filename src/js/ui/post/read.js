@@ -177,7 +177,14 @@ export async function displaySinglePost() {
 
     // Create the post structure
     const postElement = document.createElement("div");
-    postElement.classList.add("bg-white", "p-8", "rounded-lg", "shadow-md");
+    postElement.classList.add(
+      "bg-white",
+      "p-8",
+      "rounded-lg",
+      "shadow-md",
+      "max-w-4xl",
+      "mx-auto"
+    );
 
     // Post Title
     const titleElement = document.createElement("h1");
@@ -186,14 +193,15 @@ export async function displaySinglePost() {
       "text-3xl",
       "font-bold",
       "mb-6",
-      "text-gray-900"
+      "text-gray-900",
+      "break-words"
     );
     postElement.appendChild(titleElement);
 
     // Post Media (if available)
     if (post.media?.url) {
       const mediaElement = document.createElement("div");
-      mediaElement.classList.add("mb-6");
+      mediaElement.classList.add("mb-6", "relative");
 
       const imageElement = document.createElement("img");
       imageElement.src = post.media.url;
@@ -203,9 +211,17 @@ export async function displaySinglePost() {
         "h-96",
         "object-cover",
         "rounded-lg",
-        "shadow-sm"
+        "shadow-sm",
+        "cursor-pointer",
+        "hover:opacity-90",
+        "transition-opacity"
       );
       mediaElement.appendChild(imageElement);
+
+      // Add a lightbox effect for the image
+      imageElement.addEventListener("click", () => {
+        window.open(post.media.url, "_blank");
+      });
 
       postElement.appendChild(mediaElement);
     }
@@ -213,7 +229,12 @@ export async function displaySinglePost() {
     // Post Body
     const bodyElement = document.createElement("p");
     bodyElement.textContent = post.body || "No body content available.";
-    bodyElement.classList.add("text-gray-700", "text-lg", "mb-6");
+    bodyElement.classList.add(
+      "text-gray-700",
+      "text-lg",
+      "mb-6",
+      "break-words"
+    );
     postElement.appendChild(bodyElement);
 
     // Post Tags (if available)
@@ -226,14 +247,14 @@ export async function displaySinglePost() {
         tagElement.textContent = tag;
         tagElement.classList.add(
           "inline-block",
-          "bg-blue-600",
+          "bg-gray-500",
           "text-white",
           "text-sm",
           "font-semibold",
           "py-1",
           "px-3",
           "rounded-full",
-          "hover:bg-blue-700",
+          "hover:bg-gray-600",
           "transition-colors"
         );
         tagsContainer.appendChild(tagElement);
@@ -300,7 +321,13 @@ export async function displaySinglePost() {
 
       post.comments.forEach((comment) => {
         const commentElement = document.createElement("div");
-        commentElement.classList.add("bg-gray-100", "p-4", "rounded-lg");
+        commentElement.classList.add(
+          "bg-gray-100",
+          "p-4",
+          "rounded-lg",
+          "hover:bg-gray-200",
+          "transition-colors"
+        );
 
         const commentAuthor = document.createElement("p");
         commentAuthor.textContent = `By: ${comment.author?.name || "Unknown Author"}`;
@@ -313,7 +340,7 @@ export async function displaySinglePost() {
 
         const commentBody = document.createElement("p");
         commentBody.textContent = comment.body;
-        commentBody.classList.add("text-gray-700", "mt-2");
+        commentBody.classList.add("text-gray-700", "mt-2", "break-words");
         commentElement.appendChild(commentBody);
 
         commentsList.appendChild(commentElement);
@@ -325,7 +352,12 @@ export async function displaySinglePost() {
 
     // Action Buttons (Back, Edit, and Delete)
     const actionButtonsContainer = document.createElement("div");
-    actionButtonsContainer.classList.add("flex", "justify-between", "mt-6");
+    actionButtonsContainer.classList.add(
+      "flex",
+      "justify-end", // Align buttons to the right
+      "gap-2", // Add spacing between buttons
+      "mt-6"
+    );
 
     // Back Button
     const backButton = document.createElement("a");
@@ -335,10 +367,11 @@ export async function displaySinglePost() {
       "inline-block",
       "bg-blue-600",
       "text-white",
-      "py-2",
+      "text-sm",
+      "font-semibold",
+      "py-3",
       "px-6",
-      "rounded-md",
-      "font-medium",
+      "rounded-full",
       "hover:bg-blue-700",
       "transition-colors"
     );
@@ -350,13 +383,14 @@ export async function displaySinglePost() {
       editButton.textContent = "Edit Post";
       editButton.classList.add(
         "inline-block",
-        "bg-yellow-600",
+        "bg-gray-500",
         "text-white",
-        "py-2",
+        "text-sm",
+        "font-semibold",
+        "py-3",
         "px-6",
-        "rounded-md",
-        "font-medium",
-        "hover:bg-yellow-700",
+        "rounded-full",
+        "hover:bg-gray-600",
         "transition-colors"
       );
       actionButtonsContainer.appendChild(editButton);
@@ -370,11 +404,12 @@ export async function displaySinglePost() {
         "inline-block",
         "bg-red-600",
         "text-white",
-        "py-2",
+        "text-sm",
+        "font-semibold",
+        "py-3",
         "px-6",
-        "rounded-md",
-        "font-medium",
-        "hover:bg-red-700",
+        "rounded-full",
+        "bg-gray-500",
         "transition-colors"
       );
       deleteButton.setAttribute("data-id", post.id);

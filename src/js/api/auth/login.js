@@ -1,15 +1,6 @@
 import { API_AUTH_LOGIN } from "../constants";
 import { makeRequest } from "../makeRequest";
 
-/**
- * Logs in a user with the provided email and password.
- *
- * @param {Object} data - The login data.
- * @param {string} data.email - The user's email address.
- * @param {string} data.password - The user's password.
- * @returns {Promise<Object>} A promise that resolves to the user's login response, which includes an access token and user data.
- * @throws {Error} Error if the login fails, or if no data is returned from the API.
- */
 export async function login({ email, password }) {
   const formData = { email, password };
 
@@ -18,12 +9,21 @@ export async function login({ email, password }) {
     console.log("Login response:", response); // Log for debugging
 
     if (response && response.data) {
-      const { accessToken, email: userEmail } = response.data;
+      const {
+        accessToken,
+        name,
+        email: userEmail,
+        avatar,
+        banner,
+      } = response.data;
 
       return {
         token: accessToken,
         user: {
-          email: userEmail,
+          name, // Include the user's name
+          email: userEmail, // Include the user's email
+          avatar, // Include the user's avatar
+          banner, // Include the user's banner
         },
       };
     } else {

@@ -9,10 +9,11 @@ import { makeRequest } from "../makeRequest";
  * @returns {Promise<object>} The response data containing all posts.
  * @throws {Error} If the API request fails.
  */
+
 export async function readAllPosts() {
   try {
     const response = await makeRequest(
-      `${API_SOCIAL_POSTS}`,
+      `${API_SOCIAL_POSTS}?_reactions=true`, // Include reactions
       "GET",
       null,
       true

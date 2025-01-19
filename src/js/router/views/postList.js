@@ -1,30 +1,53 @@
 import { displayAllPosts, searchPosts } from "../../ui/post/read";
 import { authGuard } from "../../utilities/authGuard";
 
-let offset = 0; // Track the current offset
-const limit = 9; // Initial number of posts to load
-const loadMoreLimit = 6; // Number of posts to load on each "Load More" click
+/**
+ * Tracks the current offset for pagination.
+ * @type {number}
+ */
+let offset = 0;
 
+/**
+ * The initial number of posts to load.
+ * @type {number}
+ */
+const limit = 9;
+
+/**
+ * The number of posts to load on each "Load More" click.
+ * @type {number}
+ */
+const loadMoreLimit = 6;
+
+/**
+ * Initializes the application.
+ *
+ * - Ensures the user is authenticated using `authGuard`.
+ * - Displays the initial set of posts.
+ * - Sets up event listeners for "Load More" and search functionality.
+ *
+ * @returns {Promise<void>} A promise that resolves when initialization is complete.
+ * @throws {Error} If there is an error during authentication or post loading.
+ */
 async function init() {
-  authGuard();
   try {
-    // Wait for authGuard to complete
+    // Check if the user is authenticated
     const isAuthenticated = await authGuard();
 
-    // Only proceed if the user is authenticated
     if (isAuthenticated) {
-      // Load initial posts
+      // Display the initial set of posts
       await displayAllPosts(offset, limit);
-      offset += limit; // Update the offset
+      offset += limit;
 
-      // Add event listener to the "Load More" button
+      // Set up the "Load More" button
       const loadMoreButton = document.getElementById("loadMoreButton");
       if (loadMoreButton) {
         loadMoreButton.addEventListener("click", async () => {
+          // Load more posts
           const newPosts = await displayAllPosts(offset, loadMoreLimit);
-          offset += loadMoreLimit; // Update the offset
+          offset += loadMoreLimit;
 
-          // Disable the button if no more posts are available
+          // Disable the button if there are no more posts to load
           if (newPosts.length < loadMoreLimit) {
             loadMoreButton.disabled = true;
             loadMoreButton.textContent = "No more posts";
@@ -32,16 +55,17 @@ async function init() {
         });
       }
 
-      // Add event listener to the search input
+      // Set up the search input
       const searchInput = document.getElementById("searchInput");
       if (searchInput) {
         searchInput.addEventListener("input", (event) => {
           const query = event.target.value.trim();
-          if (query) {
-            searchPosts(query); // Call the search function
 
+          // Search posts if the query is not empty
+          if (query) {
+            searchPosts(query);
           } else {
-            // If the search input is empty, reload the initial posts
+            // Display all posts if the query is empty
             displayAllPosts(0, limit);
           }
         });
@@ -52,5 +76,5 @@ async function init() {
   }
 }
 
-// Initialize the page
+// Initialize the application
 init();

@@ -16,12 +16,12 @@ describe("onLogout", () => {
     Object.defineProperty(global, "localStorage", {
       value: localStorageMock,
     });
-    localStorage.setItem("token", "mockedToken");
+    localStorage.setItem("accessToken", "mockedToken");
   });
 
   test("removes token from localStorage", () => {
-    expect(localStorage.getItem("token")).toBe("mockedToken");
+    expect(localStorage.getItem("accessToken")).toBe("mockedToken");
     onLogout();
-    expect(localStorage.getItem("token")).toBeFalsy();
+    expect(localStorage.getItem("accessToken")).toBeFalsy();
   });
 });

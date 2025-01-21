@@ -1,9 +1,24 @@
 import { readPost, readPosts, readPostsByUser } from "../read";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+// Mock localStorage
+const localStorageMock = (() => {
+  let store = {};
+  return {
+    getItem: (key) => store[key] || null,
+    setItem: (key, value) => (store[key] = value),
+    removeItem: (key) => delete store[key],
+    clear: () => (store = {}),
+  };
+})();
+
+// Assign the mock to global.localStorage
+global.localStorage = localStorageMock;
+
 describe("API Functions", () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    localStorage.clear(); // Clear localStorage between tests
   });
 
   test("readPost fetches a single post by ID", async () => {
@@ -15,6 +30,9 @@ describe("API Functions", () => {
       })
     );
 
+    // Set a mock access token in localStorage
+    localStorage.setItem("accessToken", "mockedAccessToken");
+
     const data = await readPost(1);
     expect(data).toEqual(mockData);
   });
@@ -25,6 +43,9 @@ describe("API Functions", () => {
         ok: false,
       })
     );
+
+    // Set a mock access token in localStorage
+    localStorage.setItem("accessToken", "mockedAccessToken");
 
     await expect(readPost(1)).rejects.toThrow();
   });
@@ -38,6 +59,9 @@ describe("API Functions", () => {
       })
     );
 
+    // Set a mock access token in localStorage
+    localStorage.setItem("accessToken", "mockedAccessToken");
+
     const data = await readPosts(12, 1);
     expect(data).toEqual(mockData);
   });
@@ -48,6 +72,9 @@ describe("API Functions", () => {
         ok: false,
       })
     );
+
+    // Set a mock access token in localStorage
+    localStorage.setItem("accessToken", "mockedAccessToken");
 
     await expect(readPosts(12, 1)).rejects.toThrow();
   });
@@ -61,6 +88,9 @@ describe("API Functions", () => {
       })
     );
 
+    // Set a mock access token in localStorage
+    localStorage.setItem("accessToken", "mockedAccessToken");
+
     const data = await readPostsByUser("testuser", 12, 1);
     expect(data).toEqual(mockData);
   });
@@ -71,6 +101,9 @@ describe("API Functions", () => {
         ok: false,
       })
     );
+
+    // Set a mock access token in localStorage
+    localStorage.setItem("accessToken", "mockedAccessToken");
 
     await expect(readPostsByUser("testuser", 12, 1)).rejects.toThrow();
   });

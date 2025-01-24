@@ -1,6 +1,7 @@
 import { API_SOCIAL_POSTS } from "../../api/constants";
 import { getKey } from "../../api/getKey";
 import { makeRequest } from "../../api/makeRequest";
+import { deletePost } from "../../api/post/delete";
 import { readAllPosts, readPost } from "../../api/post/read";
 import { displayMessage } from "../../ui/global/messageUtils";
 import { authGuard } from "../../utilities/authGuard";

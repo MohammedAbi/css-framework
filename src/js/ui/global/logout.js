@@ -1,6 +1,8 @@
 import { onLogout } from "../auth/logout";
 import { displayMessage } from "./messageUtils";
 
+
+
 export function setLogoutListener() {
   const logoutButton = document.getElementById("logoutButton");
   if (logoutButton) {

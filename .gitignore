@@ -29,4 +29,4 @@ dist-ssr
 *.sw?
 
 # Custom files to ignore
-constants.js
+src/js/api/constants.js

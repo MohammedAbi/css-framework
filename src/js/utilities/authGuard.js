@@ -1,5 +1,5 @@
 import { getKey } from "../api/getKey";
-import { setLogoutListener } from "../ui/global/logout";
+
 
 /**
  * Authenticates the user by checking if the access token is stored in local storage.
@@ -13,11 +13,11 @@ export async function authGuard() {
   const accessToken = await getKey("accessToken");
   if (!accessToken) {
     alert("You must be logged in to view this page");
-    window.location.href = "/auth/login/";
+    window.location.href = "/auth/";
   }
   return accessToken;
 }
 
-setLogoutListener();
+// setLogoutListener();
 
 

@@ -187,7 +187,7 @@ export async function searchPosts(query) {
     const url = `${API_SOCIAL_POSTS}/search?q=${encodeURIComponent(query)}`;
     const data = await makeRequest(url, "GET", null, true); // Set requireApiKey to true
 
-    const posts = data.data; // Assuming the API returns { data: [...] }
+    const posts = data.data; 
 
     // Clear the existing posts in the container
     postContainer.innerHTML = "";

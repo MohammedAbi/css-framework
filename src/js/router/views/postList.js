@@ -1,7 +1,7 @@
 import { searchInput } from "../../ui/global/getSearchInput";
 import { loadMorePosts } from "../../ui/global/loadMorePosts";
 import { updateLoginButton } from "../../ui/global/updateLoginButton";
-import { displayAllPosts } from "../../ui/post/read";
+import { displayAllPosts, sortPosts } from "../../ui/post/read";
 import { authGuard } from "../../utilities/authGuard";
 
 /**
@@ -38,10 +38,21 @@ async function init() {
       // User is not authenticated, ensure the button is set to "Login"
       updateLoginButton(false);
     }
+
+    // Add event listeners for sorting
+    const sortSelect = document.querySelector("select"); // Select the <select> element
+
+    if (sortSelect) {
+      sortSelect.addEventListener("change", (event) => {
+        const selectedOption = event.target.value; // Get the selected option
+        sortPosts(selectedOption); // Call the sort function
+      });
+    }
   } catch (error) {
     console.error("Error during initialization:", error.message);
   }
 }
+
 
 // Initialize the application
 init();

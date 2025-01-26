@@ -5,26 +5,20 @@ import { deletePost } from "../../api/post/delete";
 import { readAllPosts, readPost } from "../../api/post/read";
 import { displayMessage } from "../../ui/global/messageUtils";
 import { authGuard } from "../../utilities/authGuard";
-API_SOCIAL_POSTS;
 
 authGuard();
 
 /**
- * Stores all posts globally to avoid redundant API calls.
+ * Global array to store all posts.
  * @type {Array<Object>}
  */
-let allPosts = [];
+export let allPosts = [];
 
 /**
- * Displays a paginated list of posts.
- *
- * Fetches all posts from the API (if not already fetched) and displays a subset of posts
- * based on the provided offset and limit. Posts are appended to the `postContainer` element.
- *
- * @param {number} [offset=0] - The starting index for pagination (default is 0).
- * @param {number} [limit=6] - The maximum number of posts to display per page (default is 6).
- * @returns {Promise<Array<Object>>} A promise that resolves to the paginated posts array.
- * @throws {Error} If the API request fails or the post container is not found.
+ * Fetches and displays a paginated list of posts.
+ * @param {number} [offset=0] - The starting index for pagination.
+ * @param {number} [limit=6] - The maximum number of posts to display.
+ * @returns {Promise<Array<Object>>} - A promise that resolves to an array of paginated posts.
  */
 export async function displayAllPosts(offset = 0, limit = 6) {
   const postContainer = document.getElementById("postContainer");
@@ -49,7 +43,6 @@ export async function displayAllPosts(offset = 0, limit = 6) {
       postContainer.appendChild(postElement);
     });
 
-    displayMessage("Posts loaded successfully!", "success");
     return paginatedPosts; // Return the fetched posts
   } catch (error) {
     console.error("Error fetching posts:", error.message);
@@ -57,7 +50,6 @@ export async function displayAllPosts(offset = 0, limit = 6) {
     return [];
   }
 }
-
 /**
  * Fetches and displays a single post based on the `postId` from the URL.
  * The post includes details such as title, body, media, tags, reactions, and comments.
@@ -187,7 +179,7 @@ export async function searchPosts(query) {
     const url = `${API_SOCIAL_POSTS}/search?q=${encodeURIComponent(query)}`;
     const data = await makeRequest(url, "GET", null, true); // Set requireApiKey to true
 
-    const posts = data.data; 
+    const posts = data.data;
 
     // Clear the existing posts in the container
     postContainer.innerHTML = "";
@@ -245,7 +237,7 @@ export async function onDeletePost(event) {
  * @returns {HTMLElement} The created post element.
  */
 
-function createPostElement(post) {
+export function createPostElement(post) {
   const postElement = document.createElement("div");
   postElement.classList.add("bg-white", "p-4", "rounded-lg", "shadow-md");
   postElement.setAttribute("data-post-id", post.id); // Add a data attribute for the post ID
@@ -479,42 +471,6 @@ async function toggleReaction(postId, symbol) {
 }
 
 /**
- * Updates the reactions UI for a specific post.
- * @param {number} postId - The ID of the post.
- * @param {Array} reactions - The updated reactions array.
- */
-
-// function updateReactionsUI(postId, reactions) {
-//   // Find the post element in the DOM
-//   const postElement = document.querySelector(`[data-post-id="${postId}"]`);
-//   if (!postElement) return;
-
-//   // Find the reactions container within the post element
-//   const reactionsContainer = postElement.querySelector(".reactions-container");
-//   if (!reactionsContainer) return;
-
-//   // Clear the existing reactions
-//   reactionsContainer.innerHTML = "";
-
-//   // Display the updated reactions
-//   reactions.forEach((reaction) => {
-//     const reactionElement = document.createElement("div");
-//     reactionElement.classList.add("flex", "items-center", "gap-1");
-
-//     const symbolElement = document.createElement("span");
-//     symbolElement.textContent = reaction.symbol;
-//     symbolElement.classList.add("text-lg");
-
-//     const countElement = document.createElement("span");
-//     countElement.textContent = reaction.count;
-//     countElement.classList.add("text-sm", "text-gray-600");
-
-//     reactionElement.appendChild(symbolElement);
-//     reactionElement.appendChild(countElement);
-//     reactionsContainer.appendChild(reactionElement);
-//   });
-// }
-/**
  * Creates the comments element for a post.
  * @param {Object} post - The post data.
  * @returns {HTMLElement} The comments element.
@@ -644,4 +600,64 @@ function createActionButtons(post, currentUser) {
 
   actionButtonsContainer.appendChild(backButton);
   return actionButtonsContainer;
+}
+
+/**
+ * Sorts the posts based on the selected criteria and re-renders them.
+ * @param {string} sortBy - The sorting criteria ("Sort by Latest" or "Sort by Popularity").
+ */
+
+let offset = 0; // Declare at module level
+const POSTS_PER_PAGE = 6; // Define the number of posts per page
+export function sortPosts(sortBy) {
+  if (allPosts.length === 0) {
+    console.warn("No posts available to sort.");
+    return;
+  }
+
+  let sortedPosts;
+
+  switch (sortBy) {
+    case "Sort by Latest":
+      // Sort by the `created` date (newest first)
+      sortedPosts = [...allPosts].sort(
+        (a, b) => new Date(b.created) - new Date(a.created)
+      );
+      break;
+
+    case "Sort by Popularity":
+      // Sort by the number of reactions (most reactions first)
+      sortedPosts = [...allPosts].sort((a, b) => {
+        const reactionsA = a.reactions ? a.reactions.length : 0;
+        const reactionsB = b.reactions ? b.reactions.length : 0;
+        return reactionsB - reactionsA;
+      });
+      break;
+
+    default:
+      console.warn("Invalid sort option:", sortBy);
+      return;
+  }
+
+  // Update the global allPosts array with the sorted posts
+  allPosts = sortedPosts;
+
+  // Reset the offset to 0
+  offset = 0;
+
+  // Clear the existing posts in the container
+  const postContainer = document.getElementById("postContainer");
+  if (postContainer) {
+    postContainer.innerHTML = "";
+
+    // Re-render the sorted posts
+    const paginatedPosts = allPosts.slice(offset, offset + POSTS_PER_PAGE);
+    paginatedPosts.forEach((post) => {
+      const postElement = createPostElement(post);
+      postContainer.appendChild(postElement);
+    });
+
+    // Update the offset for the next load
+    offset += POSTS_PER_PAGE;
+  }
 }

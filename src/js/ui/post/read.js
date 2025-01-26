@@ -484,36 +484,36 @@ async function toggleReaction(postId, symbol) {
  * @param {Array} reactions - The updated reactions array.
  */
 
-function updateReactionsUI(postId, reactions) {
-  // Find the post element in the DOM
-  const postElement = document.querySelector(`[data-post-id="${postId}"]`);
-  if (!postElement) return;
+// function updateReactionsUI(postId, reactions) {
+//   // Find the post element in the DOM
+//   const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+//   if (!postElement) return;
 
-  // Find the reactions container within the post element
-  const reactionsContainer = postElement.querySelector(".reactions-container");
-  if (!reactionsContainer) return;
+//   // Find the reactions container within the post element
+//   const reactionsContainer = postElement.querySelector(".reactions-container");
+//   if (!reactionsContainer) return;
 
-  // Clear the existing reactions
-  reactionsContainer.innerHTML = "";
+//   // Clear the existing reactions
+//   reactionsContainer.innerHTML = "";
 
-  // Display the updated reactions
-  reactions.forEach((reaction) => {
-    const reactionElement = document.createElement("div");
-    reactionElement.classList.add("flex", "items-center", "gap-1");
+//   // Display the updated reactions
+//   reactions.forEach((reaction) => {
+//     const reactionElement = document.createElement("div");
+//     reactionElement.classList.add("flex", "items-center", "gap-1");
 
-    const symbolElement = document.createElement("span");
-    symbolElement.textContent = reaction.symbol;
-    symbolElement.classList.add("text-lg");
+//     const symbolElement = document.createElement("span");
+//     symbolElement.textContent = reaction.symbol;
+//     symbolElement.classList.add("text-lg");
 
-    const countElement = document.createElement("span");
-    countElement.textContent = reaction.count;
-    countElement.classList.add("text-sm", "text-gray-600");
+//     const countElement = document.createElement("span");
+//     countElement.textContent = reaction.count;
+//     countElement.classList.add("text-sm", "text-gray-600");
 
-    reactionElement.appendChild(symbolElement);
-    reactionElement.appendChild(countElement);
-    reactionsContainer.appendChild(reactionElement);
-  });
-}
+//     reactionElement.appendChild(symbolElement);
+//     reactionElement.appendChild(countElement);
+//     reactionsContainer.appendChild(reactionElement);
+//   });
+// }
 /**
  * Creates the comments element for a post.
  * @param {Object} post - The post data.

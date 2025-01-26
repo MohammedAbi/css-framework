@@ -25,6 +25,7 @@ This project is a client-side social media application developed as part of the 
 - **Delete Post**: Remove a post from the system.
 - **React to Posts**: Add emoji reactions (e.g., likes, dislikes) to posts.
 - **Search Posts**: Search functionality for posts by keywords or tags.
+- **Sort Posts**: Sorting functionality for posts by "Sort by Latest" or "Sort by Popularity".
 
 ---
 

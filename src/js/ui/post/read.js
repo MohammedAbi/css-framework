@@ -22,8 +22,9 @@ export let allPosts = [];
  */
 export async function displayAllPosts(offset = 0, limit = 6) {
   const postContainer = document.getElementById("postContainer");
-  if (!postContainer) {
-    console.warn("Post container not found.");
+  const loadMoreButton = document.getElementById("loadMoreButton"); 
+  if (!postContainer || !loadMoreButton) {
+    console.warn("Post container or Load More button not found.");
     return [];
   }
 
@@ -42,6 +43,8 @@ export async function displayAllPosts(offset = 0, limit = 6) {
       const postElement = createPostElement(post);
       postContainer.appendChild(postElement);
     });
+     // Show the Load More button again after fetching
+     loadMoreButton.classList.remove("hidden"); 
 
     return paginatedPosts; // Return the fetched posts
   } catch (error) {
@@ -89,6 +92,9 @@ export async function displaySinglePost() {
 
     // Clear any existing content in the container
     singlePostContainer.innerHTML = "";
+
+    // Set the page title to the post's title followed by " - SMA" if the title is missing
+    document.title = post.title ? `${post.title} | SMA` : "SMA";
 
     // Create the main post container element
     const postElement = document.createElement("div");

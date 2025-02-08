@@ -1,7 +1,7 @@
 # Social Media Application
+
 <img width="1510" alt="Image" src="https://github.com/user-attachments/assets/42b07412-fd29-4f95-930a-db4d390dd7ee" />
 **This image showcases the client-side social media application.**
-
 
 This project is a client-side social media application developed as part of the **JavaScript 2** course assignment and later enhanced during the **CSS Frameworks** course assignment. It implements core CRUD (Create, Read, Update, Delete) functionalities for posts and includes a user authentication system. The application is styled using **Tailwind CSS** and built with modern web development tools like **Vite** and **Vitest**. While essential features are implemented, additional functionalities are planned for future contributors.
 
@@ -87,6 +87,21 @@ For testing purposes, you can use the following test user credentials:
 
 ---
 
+## Environment Variables
+
+Before running the application, make sure to set up the following environment variables by creating a .env file in the root of the project.
+
+#### Steps to set up .env:
+
+1. Create a file named .env (example.env) in the root directory of the project
+2. Add the following content to your .env file, replacing your-api-key-here with your actual API key when deploying the app to production.
+
+```bash
+VITE_API_KEY=your-api-key-here
+```
+
+---
+
 ## Project Setup
 
 ### Prerequisites
@@ -98,11 +113,11 @@ For testing purposes, you can use the following test user credentials:
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
+```bash
+git clone https://github.com/your-username/your-repo-name.git
 
 
-   ```
+```
 
 2. Navigate to the project directory:
 

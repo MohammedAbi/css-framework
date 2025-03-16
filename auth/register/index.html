@@ -2,72 +2,151 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Noroff FED2 JS2 CA</title>
+    <title>Register | SMA</title>
     <script type="module" src="/src/app.js"></script>
   </head>
-
-  <body>
-    <div class="container">
-      <a href="/"><img src="/images/noroff-logo.png" alt="Noroff Logo" /></a>
-      <nav class="navbar">
-        <a href="/">Home</a>
-        <a href="/profile/">Profile</a>
-        <a href="/post/create/">Create Post</a>
-        <!-- <a href="/post/posts/">Post List</a> -->
-        <a href="/auth/login/">Login</a>
-        <a href="/auth/register/">Register</a>
-        <button id="logoutButton" type="button">Logout</button>
-      </nav>
-      <h1>Register</h1>
-
-      <form name="register">
-        <div id="message" class="message"></div>
-        <div>
-          <label for="name">Name</label>
-          <input
-            placeholder="Enter your username"
-            id="name"
-            type="text"
-            name="name"
-            required
-            maxlength="20"
-            pattern="^[\w]+$"
-            title="Please enter a username using only letters and numbers"
-          />
+  <body class="bg-white">
+    <div class="bg-gray-100 flex flex-col min-h-screen">
+      <header class="shadow mb-2 px-4 sticky top-0 z-10 bg-white">
+        <div
+          class="relative max-w-screen-lg mx-auto py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
+        >
+          <a href="/" class="text-2xl flex items-center font-black">
+            <span class="mr-2 text-blue-600 text-3xl">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                width="24"
+                height="24"
+              >
+                <path
+                  fill="#2563EB"
+                  d="M493.7 .9L299.4 75.6l2.3-29.3c1-12.8-12.8-21.5-24-15.1L101.3 133.4C38.6 169.7 0 236.6 0 309C0 421.1 90.9 512 203 512c72.4 0 139.4-38.6 175.7-101.3L480.8 234.3c6.5-11.1-2.2-25-15.1-24l-29.3 2.3L511.1 18.3c.6-1.5 .9-3.2 .9-4.8C512 6 506 0 498.5 0c-1.7 0-3.3 .3-4.8 .9zM192 192a128 128 0 1 1 0 256 128 128 0 1 1 0-256zm0 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm16 96a16 16 0 1 0 0-32 16 16 0 1 0 0 32z"
+                />
+              </svg>
+            </span>
+            <span class="text-blue-600">SMA</span>
+          </a>
+          <input class="peer hidden" type="checkbox" id="navbar-open" />
+          <label
+            class="sm:hidden cursor-pointer absolute right-0 mt-2 text-xl"
+            for="navbar-open"
+          >
+            <span class="sr-only">Toggle Navigation</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </label>
+          <nav
+            aria-label="Header Navigation"
+            class="peer-checked:block hidden sm:block py-4 sm:py-0"
+          >
+            <ul
+              class="flex flex-col gap-y-4 sm:flex-row sm:gap-x-8 sm:items-center"
+            >
+              <li class="text-gray-600 hover:text-blue-600">
+                <a href="/">Home</a>
+              </li>
+              <li class="text-gray-600 hover:text-blue-600">
+                <a href="/post/create/">Create post</a>
+              </li>
+              <li class="text-gray-600 hover:text-blue-600">
+                <a href="/profile/">Profile</a>
+              </li>
+              <li class="text-gray-600 md:mr-12 hover:text-blue-600">
+                <a href="/auth/login/">
+                  <button
+                    class="mt-2 sm:mt-0 rounded-md border-2 border-blue-600 px-6 py-1 font-medium text-blue-600 transition-colors hover:bg-blue-600 hover:text-white"
+                  >
+                    Login
+                  </button>
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
-
-        <div>
-          <label for="email">Email</label>
-          <input
-            placeholder="yourname@stud.noroff.no"
-            id="email"
-            type="email"
-            name="email"
-            required
-            pattern="^[\w\-.]+@(stud\.)?noroff\.no$"
-            title="Please enter a valid noroff.no or stud.noroff.no address"
-          />
+      </header>
+      <main class="flex items-center justify-center py-12">
+        <div class="bg-white p-12 rounded-lg shadow-md w-full sm:w-1/3">
+          <h1 class="text-3xl font-bold mb-6 text-center">Register</h1>
+          <form
+            action="/profile"
+            method="post"
+            class="space-y-6"
+            name="register"
+          >
+            <div id="message" class="message"></div>
+            <div class="block text-sm font-medium text-gray-700">
+              <label for="name">Name</label>
+              <input
+                id="name"
+                minlength="8"
+                maxlength="20"
+                pattern="^[\w]+$"
+                title="Please enter a username using only letters and numbers"
+                placeholder="Enter your username"
+                required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500"
+              />
+            </div>
+            <div class="block text-sm font-medium text-gray-700">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                name="email"
+                minlength="8"
+                placeholder="yourname@stud.noroff.no"
+                id="email"
+                pattern="^[\w\-.]+@(stud\.)?noroff\.no$"
+                required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label
+                for="passwor"
+                class="block text-sm font-medium text-gray-700"
+                >Password</label
+              >
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter at least 8 characters"
+                id="password"
+                minlength="8"
+                required
+                class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Register
+            </button>
+          </form>
+          <div class="text-center mt-4">
+            <p class="text-sm text-gray-600">
+              Already have an account?
+              <a href="../login/" class="text-blue-500 hover:underline"
+                >Login</a
+              >
+            </p>
+          </div>
         </div>
-
-        <div>
-          <label for="password">Password</label>
-          <input
-            placeholder="Enter at least 8 characters"
-            type="password"
-            name="password"
-            id="password"
-            required
-            minlength="8"
-          />
-        </div>
-        <button type="submit">Register</button>
-        <p>
-          Already have an account?
-          <a href="/auth/login/">Login</a>
-        </p>
-      </form>
+      </main>
     </div>
   </body>
 </html>

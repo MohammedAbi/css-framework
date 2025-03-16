@@ -1,58 +1,126 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { register } from "../register";
 
+// Mock fetch globally
 global.fetch = vi.fn();
 
+// Mock localStorage
+const localStorageMock = (() => {
+  let store = {};
+  return {
+    getItem: (key) => store[key] || null,
+    setItem: (key, value) => (store[key] = value),
+    removeItem: (key) => delete store[key],
+    clear: () => (store = {}),
+  };
+})();
+
+// Assign the mock to global.localStorage
+global.localStorage = localStorageMock;
+
 describe("register", () => {
+  beforeEach(() => {
+    fetch.mockClear(); // Clear fetch mock between tests
+    localStorage.clear(); // Clear localStorage mock between tests
+  });
+
   it("should return a user object when registration is successful", async () => {
     const mockResponse = {
-      name: "test user",
-      email: "test@example.com",
-      bio: "This is a test user.",
-      avatar: {
-        url: "https://example.com/avatar.jpg",
-        alt: "My avatar alt text",
-      },
-      banner: {
-        url: "https://example.com/banner.jpg",
-        alt: "My banner alt text",
+      data: {
+        name: "Test User",
+        email: "test@example.com",
+        bio: "This is my profile bio",
+        avatar: {
+          url: "https://example.com/avatar.jpg",
+          alt: "Test Avatar",
+        },
+        banner: {
+          url: "https://example.com/banner.jpg",
+          alt: "Test Banner",
+        },
       },
     };
+
+    // Mock fetch response for a successful registration
     fetch.mockResolvedValueOnce({
-      json: async () => mockResponse,
       ok: true,
+      json: async () => mockResponse,
     });
-    const result = await register({
-      name: "Test user",
-      email: "test@stud.noroff.no",
-      password: "password",
-      bio: "This is a test user.",
+
+    const userData = {
+      name: "Test User",
+      email: "test@example.com",
+      password: "password123",
+      bio: "This is my profile bio",
       avatar: {
         url: "https://example.com/avatar.jpg",
-        alt: "My avatar alt text",
+        alt: "Test Avatar",
       },
       banner: {
         url: "https://example.com/banner.jpg",
-        alt: "My banner alt text",
+        alt: "Test Banner",
+      },
+    };
+
+    const result = await register(userData);
+
+    // Assert the result matches the expected user object
+    expect(result).toEqual({
+      name: "Test User",
+      email: "test@example.com",
+      bio: "This is my profile bio",
+      avatar: {
+        url: "https://example.com/avatar.jpg",
+        alt: "Test Avatar",
+      },
+      banner: {
+        url: "https://example.com/banner.jpg",
+        alt: "Test Banner",
       },
     });
 
-    expect(result).toEqual(mockResponse);
+    // Assert fetch was called with the correct arguments
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/auth/register"), // Ensure the URL contains the registration endpoint
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData), // Ensure the body matches the input data
+      }
+    );
   });
 
   it("should throw an error when registration fails", async () => {
+    // Mock fetch response for a failed registration
     fetch.mockResolvedValueOnce({
       ok: false,
       status: 400,
-      json: async () => ({ message: "Registration failed" }),
+      json: async () => ({
+        errors: [{ message: "Registration failed" }],
+      }),
     });
 
-    await expect(
-      register({
-        name: "Test User",
-        email: "test@example.com",
-        password: "password",
-      })
-    ).rejects.toThrow();
+    const userData = {
+      name: "Test User",
+      email: "test@example.com",
+      password: "password123",
+    };
+
+    // Assert the function throws an error
+    await expect(register(userData)).rejects.toThrow("Registration failed");
+
+    // Assert fetch was called with the correct arguments
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/auth/register"), // Ensure the URL contains the registration endpoint
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData), // Ensure the body matches the input data
+      }
+    );
   });
 });

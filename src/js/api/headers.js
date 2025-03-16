@@ -1,4 +1,4 @@
-import { API_KEY } from "./constants";
+const API_KEY = import.meta.env.VITE_API_KEY;
 import { getKey } from "./getKey";
 
 /**

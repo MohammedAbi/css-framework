@@ -41,3 +41,9 @@ loadPostData();
 document
   .getElementById("editPostForm")
   .addEventListener("submit", onUpdatePost);
+
+// Add event listener for the Cancel button
+document.getElementById("cancel").addEventListener("click", () => {
+  // Redirect the user to the post list or post details page
+  window.location.href = `/post/?postId=${postId}`; // 
+});

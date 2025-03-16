@@ -66,7 +66,10 @@ export async function onCreatePost(event) {
       try {
         const response = await createPost(formData, postId);
         console.log("Post submission response:", response);
-        displayMessage("Post successfully created!", "success");
+        displayMessage(
+          "Post successfully created! Redirecting to Home page...",
+          "success"
+        );
         setTimeout(() => {
           window.location.href = "../../";
         }, 2000);

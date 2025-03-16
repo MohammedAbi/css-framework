@@ -5,9 +5,14 @@
  * @param {string} key - The key under which the value should be stored.
  * @param {any} value - The value to be stored. This can be any JavaScript data type.
  * @returns {Promise<void>} A promise that resolves when the data is saved to local storage.
+ * @throws {Error} If saving to local storage fails.
  */
 export async function saveKey(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    throw new Error(`Failed to save data to local storage: ${error.message}`);
+  }
 }
 
 /**
@@ -19,5 +24,14 @@ export async function saveKey(key, value) {
  */
 export async function getKey(key) {
   const item = localStorage.getItem(key);
-  return item ? JSON.parse(item) : null; // Return `null` if the item doesn't exist
+  if (item === null) return null; // Return `null` if the item doesn't exist
+
+  try {
+    // Attempt to parse the item as JSON
+    return JSON.parse(item);
+  } catch (error) {
+    // If parsing fails, return the raw item as a string
+    return item;
+  }
 }
+

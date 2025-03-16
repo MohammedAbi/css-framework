@@ -2,14 +2,6 @@ import { login } from "../../api/auth/login";
 import { saveKey } from "../../api/getKey";
 import { displayMessage } from "../global/messageUtils";
 
-/**
- * Handles the login process by collecting form data, passing it to the login function,
- * and handling the response. If successful, stores the access token and profile data
- * in local storage and redirects the user to the homepage.
- *
- * @param {Event} event - The form submission event.
- * @async
- */
 export async function onLogin(event) {
   event.preventDefault();
 
@@ -22,11 +14,21 @@ export async function onLogin(event) {
     const response = await login(formData);
     displayMessage("Login successful! Redirecting...", "success");
 
-    await saveKey("accessToken", response.token);
-    await saveKey("profileData", response.user);
+    // Save the entire profile to localStorage
+    const profile = {
+      name: response.user.name, // User's name
+      email: response.user.email, // User's email
+      avatar: response.user.avatar, // User's avatar
+      banner: response.user.banner, // User's banner
+      accessToken: response.token, // Access token
+    };
 
+    await saveKey("profileData", profile); // Save the entire profile
+    await saveKey("accessToken", response.token); // Save the access token separately
+
+    // Redirect to the homepage
     setTimeout(() => {
-      window.location.href = "../../";
+      window.location.href = "/"; // Redirect to the root path
     }, 2000);
   } catch (error) {
     displayMessage(`Login failed: ${error.message}`, "error");

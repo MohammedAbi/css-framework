@@ -23,7 +23,16 @@ export async function deletePost(postId) {
       console.log(`Post with ID ${postId} deleted successfully.`);
       return true; // Return true on successful deletion
     }
- 
+
+    // If the response is not null, check if it's ok
+    if (response.ok) {
+      console.log(`Post with ID ${postId} deleted successfully.`);
+      return true; // Return true on successful deletion
+    }
+
+    // If the response is not ok, parse the error message
+    const errorData = await response.json();
+    throw new Error(errorData.errors[0].message);
   } catch (error) {
     console.error("Error in deletePost:", error.message);
     throw error; // Re-throw the error for further handling
